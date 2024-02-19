@@ -12,11 +12,11 @@ def parse_arguments() -> argparse.Namespace:
 
 def main():
     args = parse_arguments()
-    frame_width, frame_height = 1440, 810  # Set your desired frame width and height here
 
-    cap = cv2.VideoCapture('crowd.mp4')
-    cap.set(cv2.CAP_PROP_FRAME_WIDTH, frame_width)
-    cap.set(cv2.CAP_PROP_FRAME_HEIGHT, frame_height)
+
+    cap = cv2.VideoCapture('classroom.mp4')
+    frame_width = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
+    frame_height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))    
 
     model = YOLO("yolov8l.pt")
 
@@ -26,6 +26,7 @@ def main():
         text_scale=1
     )
 
+    # Calculate zone width and height for four equal parts
     zone_width = frame_width // 2
     zone_height = frame_height // 2
 
@@ -37,7 +38,7 @@ def main():
     ]
 
     zones = [
-        sv.PolygonZone(polygon=zone_polygon, frame_resolution_wh=(frame_width, frame_height))
+        sv.PolygonZone(polygon=zone_polygon, frame_resolution_wh=(zone_width, zone_height))
         for zone_polygon in ZONE_POLYGONS
     ]
 
